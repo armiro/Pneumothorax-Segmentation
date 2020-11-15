@@ -20,18 +20,13 @@ def rle2mask(rle, width, height):
     return np.rot90(np.flip(mask.reshape(width, height), axis=1))
 
 
-# training_path = './siim/dicom-images-train'
 md_path = './siim/train-rle.csv'
 image_shape = (1024, 1024)
 metadata = open(file=md_path, mode='r')
-header = metadata.readline()
-print('dataset columns are:', header)
-
 records = csv.reader(metadata, delimiter=',')
-sorted_records = sorted(records, key=operator.itemgetter(0))
-masks = list()
-prev_mask = None
+sorted_records = sorted(records, key=operator.itemgetter(0))[:-1]
 
+masks = list()
 for idx, rec in enumerate(sorted_records):
     image_id = rec[0]
     encoded_pixel = rec[1]
