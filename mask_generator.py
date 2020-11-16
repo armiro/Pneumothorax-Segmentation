@@ -1,6 +1,7 @@
 import numpy as np
 import operator
 import csv
+import gzip
 
 
 # function to extract mask from rle-coded data
@@ -47,10 +48,12 @@ def generate_masks_from(metadata_path, mask_shape):
 def save_masks(masks):
     print('number of images in the dataset with at least one corresponding mask:', len(masks))
     print('shape of generated ground-truth:', masks.shape)
-    print('save the generated masks? (y/n) \n')
+    print('save the generated masks? (y/n)')
     if input() == 'y':
-        np.save('./siim/training_masks.npy', arr=masks)
-        print('npy file saved!')
+        file = gzip.GzipFile(filename='./siim/training_masks.npy.gz', mode='w')
+        np.save(file, arr=masks)
+        file.close()
+        print('compressed npy file saved!')
     else:
         print('saving masks ABORTED!')
 
