@@ -48,9 +48,10 @@ def generate_masks_from(metadata_path, mask_shape):
 def save_masks(masks):
     print('number of images in the dataset with at least one corresponding mask:', len(masks))
     print('shape of generated ground-truth:', masks.shape)
+    print('size of generated ground-truth:', masks.nbytes)
     print('save the generated masks? (y/n)')
     if input() == 'y':
-        file = gzip.GzipFile(filename='./siim/training_masks.npy.gz', mode='w')
+        file = gzip.GzipFile(filename='./siim/training_masks_resized.npy.gz', mode='w')
         np.save(file, arr=masks)
         file.close()
         print('compressed npy file saved!')
@@ -60,7 +61,7 @@ def save_masks(masks):
 
 def main():
     md_path = './siim/train-rle.csv'
-    generated_masks = generate_masks_from(metadata_path=md_path, mask_shape=(1024, 1024))
+    generated_masks = generate_masks_from(metadata_path=md_path, mask_shape=(512, 512))
     save_masks(masks=generated_masks)
 
 
