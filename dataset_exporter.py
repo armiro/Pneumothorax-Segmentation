@@ -4,6 +4,7 @@ import pydicom
 import csv
 import gzip
 import operator
+import cv2.cv2 as cv2
 
 
 def initialize_csv_reader(path, header):
@@ -45,7 +46,7 @@ def collect_images_from(path, metadata_path, csv_writer, exporting_file):
                     continue
                 else:
                     this_img = pydicom.dcmread(fp=path_name)
-                    images.append(this_img.pixel_array)
+                    images.append(cv2.resize(src=this_img.pixel_array, dsize=(512, 512)))
                     # mask = encoded_pixels[idx]
                     patient_id = this_img.PatientID
                     sex = this_img.PatientSex
