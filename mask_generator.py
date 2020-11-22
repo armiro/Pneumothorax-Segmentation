@@ -2,10 +2,13 @@ import numpy as np
 import operator
 import csv
 import gzip
+import cv2.cv2 as cv2
+import matplotlib.pyplot as plt
 
 
 # function to extract mask from rle-coded data
-def rle2mask(rle, width, height):
+def rle2mask(rle, width=1024, height=1024):
+    # because of the range of the numbers in the dataset masks column, we have to create default (1024,1024) masks
     mask = np.zeros(width * height)
     array = np.asarray([int(x) for x in rle.split()])
     starts = array[0::2]
@@ -35,8 +38,8 @@ def generate_masks_from(metadata_path, mask_shape):
             # create a black mask for cases with neg label
             masks.append(np.zeros(shape=mask_shape, dtype='uint8'))
         else:
-            # convert RLE-coded data into mask images
-            mask = rle2mask(rle=encoded_pixel, width=mask_shape[0], height=mask_shape[1]).astype('uint8')
+            # convert RLE-coded data into mask images, and reshape them
+            mask = cv2.resize(src=rle2mask(rle=encoded_pixel).astype('uint8'), dsize=mask_shape)
             if image_id == prev_image_id:
                 last_mask = masks.pop()
                 masks.append(np.logical_or(mask, last_mask))
