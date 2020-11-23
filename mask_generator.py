@@ -3,7 +3,6 @@ import operator
 import csv
 import gzip
 import cv2.cv2 as cv2
-import matplotlib.pyplot as plt
 
 
 # function to extract mask from rle-coded data
@@ -17,7 +16,7 @@ def rle2mask(rle, width=1024, height=1024):
     current_position = 0
     for idx, start in enumerate(starts):
         current_position += start
-        mask[current_position:current_position + lengths[idx]] = 255
+        mask[current_position:current_position + lengths[idx]] = 1
         current_position += lengths[idx]
 
     return np.rot90(np.flip(mask.reshape(width, height), axis=1))
@@ -38,7 +37,7 @@ def generate_masks_from(metadata_path, mask_shape):
             # create a black mask for cases with neg label
             masks.append(np.zeros(shape=mask_shape, dtype='uint8'))
         else:
-            # convert RLE-coded data into mask images, and reshape them
+            # convert RLE-coded data into mask image, and reshape it
             mask = cv2.resize(src=rle2mask(rle=encoded_pixel).astype('uint8'), dsize=mask_shape)
             if image_id == prev_image_id:
                 last_mask = masks.pop()
